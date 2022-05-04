@@ -4,6 +4,11 @@ import streamlit as st
 import pandas as pd
 from gsheetsdb import connect
 
+st.set_page_config(layout='wide',
+        initial_sidebar_state='expanded',
+        page_title='Market Watch',
+        page_icon='📰',)
+
 # Create a connection object.
 conn = connect()
 
