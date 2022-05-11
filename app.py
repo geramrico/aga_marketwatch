@@ -89,7 +89,7 @@ data = data.sort_values(by="Fecha", ascending=False)
 
 all_tags = list_of(data,"Tag_1") + list_of(data,"Tag_2") + list_of(data,"Tag_3")
 
-fuentes = st.sidebar.multiselect(label="Fuente", options=list_of(data,'Fuente'),on_change=data)
+fuentes = st.sidebar.multiselect(label="Fuente", options=list_of(data,'Fuente'))
 lineas_negocio = st.sidebar.multiselect(label="Línea de Negocio", options=list_of(data,'Linea_negocio'))
 regiones = st.sidebar.multiselect(label="Región", options=list_of(data,'Región'))
 ramos = st.sidebar.multiselect(label="Ramo", options=list_of(data,'Ramo'))
