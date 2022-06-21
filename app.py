@@ -99,7 +99,7 @@ ramos = st.sidebar.multiselect(label="Ramo", options=list_of(data,'Ramo'))
 audiencias = st.sidebar.multiselect(label="Audiencia", options=list_of(data,'Audiencia'))
 aseguradora = st.sidebar.multiselect(label="Aseguradora", options=list_of(data,'Aseguradora'))
 tipo_impacto = st.sidebar.multiselect(label="Tipo Impacto", options=list_of(data,'Tipo_Impacto'))
-tendencias = st.sidebar.multiselect(label="Tendencias Globales", options=list_of(data,'Tendencias_Globales'))
+niveles_relev = st.sidebar.multiselect(label="Nivel de Impacto", options=list_of(data,'Relevancia'))
 st.sidebar.write('---')
 tags = st.sidebar.multiselect(label="Palabras Clave", options=all_tags)
 
@@ -151,8 +151,8 @@ if len(aseguradora) == 0:
   aseguradora = sorted(data["Aseguradora"].drop_duplicates())
 if len(tipo_impacto) == 0:
   tipo_impacto = sorted(data["Tipo_Impacto"].drop_duplicates())
-if len(tendencias) == 0:
-  tendencias = sorted(data["Tendencias_Globales"].drop_duplicates())
+if len(niveles_relev) == 0:
+  niveles_relev = sorted(data["Relevancia"].drop_duplicates())
 if len(tags) == 0:
   tags = all_tags
 
@@ -166,7 +166,7 @@ data = data[
     & data["Audiencia"].isin(audiencias)
     & data["Aseguradora"].isin(aseguradora)
     & data["Tipo_Impacto"].isin(tipo_impacto)
-    & data["Tendencias_Globales"].isin(tendencias)
+    & data["Relevancia"].isin(niveles_relev)
 
     & (data["Tag_1"].isin(tags)
     | data["Tag_2"].isin(tags)
@@ -183,9 +183,10 @@ if filtered_data.empty:
 
 st.sidebar.info(f"""Se encontraron {found_data} notas""")
 st.sidebar.warning('''
-Relevancias 
+Impacto 
 
-- **Alto**: Nuevos convenios, Join Venture, Adquisiciones, Oferta Agresiva y Negociaciones.
+- **Muy Alta**: Join Venture, compra /venta empresa, oferta agresiva nacional, nuevos productos, cambios coberturas, nuevos seguros, impacto en siniestralidad, impacto en precios
+- **Alta**: Nuevos convenios, Join Venture, Adquisiciones, Oferta Agresiva y Negociaciones.
 - **Medio**: Ofertas, Descuentos, Resultados financieros y Innovaciones. 
 - **Bajo**: Enfermedades de impacto global, Branding, Otras industrias y Cambios en Coberturas.''')
 
@@ -205,7 +206,7 @@ for i,r in enumerate(filtered_data.itertuples()):
 
     with col2:
       if r.Relevancia:
-          relevancia = f"**Relevancia**: {r.Relevancia}"
+          relevancia = f"**Nivel de Impacto**: {r.Relevancia}"
           # relevancia = f"Relevancia {relev[r.Relevancia]}"
           st.write(relevancia)
       f'''**Impacto**: {r.Tipo_Impacto}'''
