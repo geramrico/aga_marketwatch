@@ -54,6 +54,9 @@ columnas = [
     "Tag_3",
     "Comentarios",
     "Relevancia",
+    "Aseguradora",
+    "Tipo_Impacto",
+    "Tendencias_Globales"
 ]
 
 # Perform SQL query on the Google Sheet.
@@ -94,6 +97,9 @@ lineas_negocio = st.sidebar.multiselect(label="Línea de Negocio", options=list_
 regiones = st.sidebar.multiselect(label="Región", options=list_of(data,'Región'))
 ramos = st.sidebar.multiselect(label="Ramo", options=list_of(data,'Ramo'))
 audiencias = st.sidebar.multiselect(label="Audiencia", options=list_of(data,'Audiencia'))
+aseguradora = st.sidebar.multiselect(label="Aseguradora", options=list_of(data,'Aseguradora'))
+tipo_impacto = st.sidebar.multiselect(label="Tipo Impacto", options=list_of(data,'Tipo_Impacto'))
+tendencias = st.sidebar.multiselect(label="Tendencias Globales", options=list_of(data,'Tendencias_Globales'))
 st.sidebar.write('---')
 tags = st.sidebar.multiselect(label="Palabras Clave", options=all_tags)
 
@@ -141,6 +147,12 @@ if len(ramos) == 0:
   ramos = sorted(data["Ramo"].drop_duplicates())
 if len(audiencias) == 0:
   audiencias = sorted(data["Audiencia"].drop_duplicates())
+if len(aseguradora) == 0:
+  aseguradora = sorted(data["Aseguradora"].drop_duplicates())
+if len(tipo_impacto) == 0:
+  tipo_impacto = sorted(data["Tipo_Impacto"].drop_duplicates())
+if len(tendencias) == 0:
+  tendencias = sorted(data["Tendencias_Globales"].drop_duplicates())
 if len(tags) == 0:
   tags = all_tags
 
@@ -152,6 +164,9 @@ data = data[
     & data["Linea_negocio"].isin(lineas_negocio)
     & data["Ramo"].isin(ramos)
     & data["Audiencia"].isin(audiencias)
+    & data["Aseguradora"].isin(aseguradora)
+    & data["Tipo_Impacto"].isin(tipo_impacto)
+    & data["Tendencias_Globales"].isin(tendencias)
 
     & (data["Tag_1"].isin(tags)
     | data["Tag_2"].isin(tags)
@@ -167,6 +182,12 @@ if filtered_data.empty:
     st.warning("No hay información para los filtros seleccionados")
 
 st.sidebar.info(f"""Se encontraron {found_data} notas""")
+st.sidebar.warning('''
+Relevancias 
+
+- **Alto**: Nuevos convenios, Join Venture, Adquisiciones, Oferta Agresiva y Negociaciones.
+- **Medio**: Ofertas, Descuentos, Resultados financieros y Innovaciones. 
+- **Bajo**: Enfermedades de impacto global, Branding, Otras industrias y Cambios en Coberturas.''')
 
 for i,r in enumerate(filtered_data.itertuples()):
     st.markdown(f"#### {i+1}. {r.Título}")
@@ -177,18 +198,22 @@ for i,r in enumerate(filtered_data.itertuples()):
         "Baja": "❗",
         "Media": "❗❗",
         "Alta": "❗❗❗",
+        "Muy Alta": "❗❗❗❗",
     }
 
     col1,col2 = st.columns(2)
 
     with col2:
       if r.Relevancia:
-          relevancia = f"Relevancia {relev[r.Relevancia]}"
+          relevancia = f"**Relevancia**: {r.Relevancia}"
+          # relevancia = f"Relevancia {relev[r.Relevancia]}"
           st.write(relevancia)
+      f'''**Impacto**: {r.Tipo_Impacto}'''
       st.markdown(f"**Region:** {r.Región} | **Ramo:** {r.Ramo} | **{r.Audiencia}**")
 
     with col1:
       st.markdown(f"**{r.Fuente}** | {r.Fecha}")
+      f'''**Tendencias Globales**: {r.Tendencias_Globales}'''
       f'''**Palabras clave:** {r.Tag_1} - {r.Tag_2} - {r.Tag_3}'''
 
 
